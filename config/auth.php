@@ -67,10 +67,17 @@ return [
             'model' => env('AUTH_MODEL', User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        // Provider untuk model Pendaftar
+        'pendaftars' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pendaftar::class,
+        ],
+
+        // Provider untuk model Admin
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
     ],
 
     /*
@@ -96,6 +103,22 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        // Broker reset password untuk Pendaftar
+        'pendaftars' => [
+            'provider' => 'pendaftars',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        // Broker reset password untuk Admin
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],
