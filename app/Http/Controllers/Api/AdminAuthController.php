@@ -41,7 +41,10 @@ class AdminAuthController extends Controller
 
         // 3. Check credentials
         if ($admin && Hash::check($request->password, $admin->password)) {
-            // Success: Create a Sanctum token
+            // Success: Login to session
+            \Illuminate\Support\Facades\Auth::guard('admin')->login($admin);
+
+            // Create a Sanctum token (tetap buat token jika sewaktu-waktu butuh kriteria bearer)
             $token = $admin->createToken('admin-token')->plainTextToken;
 
             return response()->json([

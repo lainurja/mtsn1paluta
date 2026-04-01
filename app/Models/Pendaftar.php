@@ -32,6 +32,11 @@ class Pendaftar extends Authenticatable implements CanResetPasswordContract
         ];
     }
 
+    public function dataPendaftar()
+    {
+        return $this->hasOne(DataPendaftar::class);
+    }
+
     public function sendPasswordResetNotification($token): void
     {
         $url = env('FRONTEND_URL') . '/reset-password?token=' . $token . '&email=' . urlencode($this->email);
