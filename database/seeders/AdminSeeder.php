@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
     {
         Admin::updateOrCreate(
             ['email' => 'admin@mtsn1paluta.sch.id'],
-            ['password' => Hash::make('password123')]
+            ['password' => 'password123']
         );
     }
 }

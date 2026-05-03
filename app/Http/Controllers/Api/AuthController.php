@@ -10,10 +10,20 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+use App\Models\Setting;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        // 1. Cek Status PPDB
+        $status = Setting::where('key', 'ppdb_status')->first();
+        if (!$status || $status->value !== 'Buka') {
+            return response()->json([
+                'message' => 'Pendaftaran sedang ditutup.'
+            ], 403);
+        }
+
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'email'        => 'required|string|email|unique:pendaftars,email',
@@ -21,11 +31,15 @@ class AuthController extends Controller
             'password'     => 'required|string|min:6|confirmed',
         ]);
 
+        // 2. Ambil Tahun Ajaran Aktif
+        $activeYear = Setting::where('key', 'tahun_ajaran_aktif')->first()?->value ?? 'None';
+
         $user = Pendaftar::create([
             'nama_lengkap' => $request->nama_lengkap,
             'email'        => $request->email,
             'nisn'         => $request->nisn,
-            'password'     => $request->password, // automatically hashed by casts
+            'password'     => $request->password,
+            'tahun_ajaran' => $activeYear,
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

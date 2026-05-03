@@ -63,4 +63,18 @@ class AdminAuthController extends Controller
             'message' => 'Email atau password admin salah.',
         ], 401);
     }
+
+    public function logout(Request $request)
+    {
+        if ($request->user()) {
+            $request->user()->currentAccessToken()->delete();
+        }
+        
+        \Illuminate\Support\Facades\Auth::guard('admin')->logout();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout berhasil.'
+        ]);
+    }
 }

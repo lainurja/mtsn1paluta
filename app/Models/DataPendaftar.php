@@ -45,6 +45,8 @@ class DataPendaftar extends Model
         'path_nisn',
         'path_sertifikat',
         'status',
+        'status_ujian',
+        'status_kelulusan',
         'is_final_submit',
     ];
 

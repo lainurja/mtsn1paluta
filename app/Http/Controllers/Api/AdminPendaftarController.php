@@ -24,6 +24,18 @@ class AdminPendaftarController extends Controller
             });
         }
 
+        if ($request->has('tahun_ajaran')) {
+            $query->where('tahun_ajaran', $request->tahun_ajaran);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%");
+            });
+        }
+
         $pendaftars = $query->get();
 
         return response()->json([
@@ -75,6 +87,60 @@ class AdminPendaftarController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Status pendaftaran berhasil diperbarui.',
+            'data' => $data
+        ]);
+    }
+
+    public function updateStatusUjian(Request $request, $id)
+    {
+        $request->validate([
+            'status_ujian' => 'required|string',
+        ]);
+
+        $data = DataPendaftar::where('pendaftar_id', $id)->first();
+        if (!$data) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pendaftar belum diisi.'
+            ], 404);
+        }
+
+        $data->status_ujian = $request->status_ujian;
+        
+        // Auto-verify administrative status if exam is already taken
+        if ($request->status_ujian === 'Sudah Ujian' && $data->status === 'Pending') {
+            $data->status = 'Terverifikasi';
+        }
+        
+        $data->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status ujian berhasil diperbarui.',
+            'data' => $data
+        ]);
+    }
+
+    public function updateStatusKelulusan(Request $request, $id)
+    {
+        $request->validate([
+            'status_kelulusan' => 'required|string',
+        ]);
+
+        $data = DataPendaftar::where('pendaftar_id', $id)->first();
+        if (!$data) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pendaftar belum diisi.'
+            ], 404);
+        }
+
+        $data->status_kelulusan = $request->status_kelulusan;
+        $data->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status kelulusan berhasil diperbarui.',
             'data' => $data
         ]);
     }

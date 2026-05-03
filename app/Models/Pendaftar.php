@@ -19,6 +19,8 @@ class Pendaftar extends Authenticatable implements CanResetPasswordContract
         'email',
         'nisn',
         'password',
+        'pilihan_gedung',
+        'tahun_ajaran'
     ];
 
     protected $hidden = [
