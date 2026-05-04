@@ -25,7 +25,7 @@ class BeritaController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'desc' => 'required|string',
+            'desc' => 'nullable|string',
             'konten' => 'required|string',
             'kategori' => 'nullable|string',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
@@ -34,7 +34,7 @@ class BeritaController extends Controller
         $berita = new Berita();
         $berita->judul = $request->judul;
         $berita->slug = \Illuminate\Support\Str::slug($request->judul) . '-' . time();
-        $berita->desc = $request->desc;
+        $berita->desc = $request->desc ?? '';
         $berita->konten = $request->konten;
         $berita->kategori = $request->kategori ?? 'Umum';
 
@@ -54,7 +54,7 @@ class BeritaController extends Controller
 
         $request->validate([
             'judul' => 'sometimes|required|string|max:255',
-            'desc' => 'sometimes|required|string',
+            'desc' => 'nullable|string',
             'konten' => 'sometimes|required|string',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
         ]);
